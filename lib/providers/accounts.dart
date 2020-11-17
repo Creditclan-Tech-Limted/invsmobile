@@ -9,8 +9,6 @@ import 'package:selcapital/providers/user.dart';
 class Accounts {
   String bvn;
   String txn;
-  List<dynamic> cards;
-  List<dynamic> banks;
   final String firstName;
   final String lastName;
   final String dob;
@@ -19,8 +17,6 @@ class Accounts {
   Accounts({
     this.bvn,
     this.txn,
-    this.cards,
-    this.banks,
     this.firstName,
     this.lastName,
     this.dob,
@@ -31,8 +27,6 @@ class Accounts {
     return Accounts(
       bvn: json['data']['data']['bvn'],
       txn: json['data']['TXN_REF'],
-      cards: json['cards'],
-      banks: json['banks'],
       firstName: json['data']['data']['first_name'],
       lastName: json['data']['data']['last_name'],
       dob: json['data']['data']['formatted_dob'],
@@ -41,19 +35,68 @@ class Accounts {
   }
 }
 
+class AccountHolder {
+  String name;
+  String account;
+  String bank;
+
+  AccountHolder({this.name, this.account, this.bank});
+
+  factory AccountHolder.fromJson(Map<String, dynamic> json) {
+    return AccountHolder(
+      name: json['data']['account_name'],
+      account: json['data']['account_number'],
+      bank: '${json['data']['bank_id']}',
+    );
+  }
+}
+
+class Cards {
+  final List<dynamic> data;
+
+  Cards({this.data});
+
+  factory Cards.fromJson(Map<String, dynamic> json) {
+    return Cards(
+      data: json['data'],
+    );
+  }
+}
+
+class Banks {
+  final List<dynamic> data;
+  final List<dynamic> banks;
+
+  Banks({this.data, this.banks});
+
+  factory Banks.fromJson(Map<String, dynamic> json) {
+    return Banks(
+      data: json['data'],
+      banks: json['banks_list'],
+    );
+  }
+}
+
 class AccountsModel extends ChangeNotifier {
   final http.BaseClient httpClient = new HttpClient(kApiKey, http.Client());
 
   UserModel _userModel = new UserModel();
+
   Accounts _accounts = new Accounts();
+  AccountHolder _accountHolder = new AccountHolder();
+
+  List<dynamic> _cards = [];
+  List<dynamic> _banks = [];
+  List<dynamic> _banksList = [];
 
   Accounts get accounts => _accounts;
+  AccountHolder get accountHolder => _accountHolder;
 
   String get bvn => _accounts.bvn;
 
-  List<dynamic> get cards => _accounts.cards;
-
-  List<dynamic> get banks => _accounts.banks;
+  List<dynamic> get cards => _cards;
+  List<dynamic> get banks => _banks;
+  List<dynamic> get banksList => _banksList;
 
   void update(UserModel userModel) {
     _userModel = userModel;
@@ -155,7 +198,7 @@ class AccountsModel extends ChangeNotifier {
       if (response.statusCode < 300) {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        _accounts.cards = Accounts.fromJson(jsonDecode(response.body)).cards;
+        _cards = Cards.fromJson(jsonDecode(response.body)).data;
       } else {
         throw Exception(response.body);
       }
@@ -166,8 +209,10 @@ class AccountsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> resolveBank(String account, String bank) async {
+  Future<bool> resolveBank(String account, String bank) async {
     try {
+      print(account);
+      print(bank);
       final response = await httpClient.post(
         '$kBaseUrl/user/account/resolve',
         body: jsonEncode(<String, String>{
@@ -179,25 +224,39 @@ class AccountsModel extends ChangeNotifier {
       if (response.statusCode < 300) {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
+
+        String checkValid = jsonDecode(response.body)['status'];
+        if (checkValid != 'success') throw Exception(response.body);
+
+        _accountHolder = AccountHolder.fromJson(jsonDecode(response.body));
+
+        notifyListeners();
+
+        return true;
       } else {
         throw Exception(response.body);
       }
     } catch (e) {
       print('Error: $e');
-    }
 
-    notifyListeners();
+      notifyListeners();
+
+      return false;
+    }
   }
 
-  Future<void> addBank(String name, String account, String bank) async {
+  Future<bool> addBank(String name, String account, String bank) async {
+    print(name);
+    print(account);
+    print(bank);
     try {
       final response = await httpClient.post(
-        '$kBaseUrl/user/account/save',
+        '$kBaseUrl/customer/banks/save',
         body: jsonEncode(<String, String>{
           'token': _userModel.user.token,
           'account_name': name,
           'account_number': account,
-          'bank_code': bank,
+          'bank_id': bank,
         }),
       );
       if (response.statusCode < 300) {
@@ -206,14 +265,20 @@ class AccountsModel extends ChangeNotifier {
 
         bool checkValid = jsonDecode(response.body)['status'];
         if (!checkValid) throw Exception(response.body);
+
+        notifyListeners();
+
+        return true;
       } else {
         throw Exception(response.body);
       }
     } catch (e) {
       print('Error: $e');
-    }
 
-    notifyListeners();
+      notifyListeners();
+
+      return false;
+    }
   }
 
   Future<void> fetchBanks() async {
@@ -227,7 +292,8 @@ class AccountsModel extends ChangeNotifier {
       if (response.statusCode < 300) {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        _accounts.banks = Accounts.fromJson(jsonDecode(response.body)).banks;
+        _banks = Banks.fromJson(jsonDecode(response.body)).data;
+        _banksList = Banks.fromJson(jsonDecode(response.body)).banks;
       } else {
         throw Exception(response.body);
       }

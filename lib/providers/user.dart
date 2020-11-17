@@ -112,7 +112,7 @@ class Profile {
       dob: json['date_of_birth'],
       picture: json['file_name'],
       bvn: json['bvn'],
-      maritalStatus: json['maritalStatus'],
+      maritalStatus: json['marital_status'],
     );
   }
 
@@ -181,10 +181,17 @@ class UserModel extends ChangeNotifier {
 
   User get user => _user;
 
+  Timer updateProfile;
+
   Future<void> loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final String user = prefs.getString('user');
     _user = SavedUser.fromJson(jsonDecode(user));
+
+    if (updateProfile != null) updateProfile.cancel();
+    updateProfile = Timer.periodic(new Duration(seconds: 60), (timer) {
+      this.fetchProfile();
+    });
 
     notifyListeners();
   }
@@ -215,6 +222,11 @@ class UserModel extends ChangeNotifier {
           _user = User.fromJson(jsonDecode(userResponse.body), token);
 
           notifyListeners();
+
+          if (updateProfile != null) updateProfile.cancel();
+          updateProfile = Timer.periodic(new Duration(seconds: 60), (timer) {
+            this.fetchProfile();
+          });
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('loggedIn', true);
@@ -271,6 +283,11 @@ class UserModel extends ChangeNotifier {
 
           notifyListeners();
 
+          if (updateProfile != null) updateProfile.cancel();
+          updateProfile = Timer.periodic(new Duration(seconds: 60), (timer) {
+            this.fetchProfile();
+          });
+
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('loggedIn', true);
           prefs.setString('user', jsonEncode(_user));
@@ -320,6 +337,7 @@ class UserModel extends ChangeNotifier {
 
   Future<void> fetchProfile() async {
     try {
+      print(_user.token);
       final response = await httpClient.post(
         '$kBaseUrl/user/details',
         body: jsonEncode(<String, dynamic>{
@@ -466,6 +484,8 @@ class UserModel extends ChangeNotifier {
 
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    prefs.setBool('loggedIn', false);
+    prefs.remove('user');
+    if (updateProfile != null) updateProfile.cancel();
   }
 }

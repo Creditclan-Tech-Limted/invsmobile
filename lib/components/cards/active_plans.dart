@@ -7,11 +7,13 @@ class ActivePlansCard extends StatelessWidget {
     Key key,
     this.planType,
     this.balance,
-    this.interestPerAnnum,
+    this.maturityDate,
+    this.frequency,
   }) : super(key: key);
   final String planType;
   final String balance;
-  final String interestPerAnnum;
+  final String maturityDate;
+  final String frequency;
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +94,35 @@ class ActivePlansCard extends StatelessWidget {
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$frequency weekly",
+                      style: TextStyle(
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF41414F),
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      "Frequency",
+                      style: TextStyle(
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFFA7A6A6),
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        interestPerAnnum,
+                        maturityDate,
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w600,
@@ -105,7 +131,7 @@ class ActivePlansCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "interest per annum",
+                        "Maturity Date",
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w500,

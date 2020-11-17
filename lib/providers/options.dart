@@ -207,9 +207,6 @@ class OptionsModel extends ChangeNotifier {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
         _lgas = Option.fromJson(jsonDecode(response.body)).data;
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('lgas', response.body);
       } else {
         throw Exception(response.body);
       }

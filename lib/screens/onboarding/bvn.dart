@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selcapital/components/basic/form_error.dart';
 import 'package:selcapital/components/buttons/primary_block.dart';
@@ -118,6 +119,16 @@ class _BvnValidationState extends State<BvnValidation> {
                                 if (validBVN) {
                                   Navigator.pushNamed(
                                       context, OTPscreen.routeName);
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg: "Invalid BVN!",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.SNACKBAR,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: kPrimaryColor,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
                                 }
                                 setState(() {
                                   s = 1;

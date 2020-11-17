@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:selcapital/components/cards/active_plans.dart';
-import 'package:selcapital/components/cards/on_hold_plans.dart';
 import 'package:selcapital/screens/plans/add_plan.dart';
 import 'package:selcapital/screens/savings/savings_detail.dart';
 import 'package:selcapital/constants.dart';
 import 'package:selcapital/size_config.dart';
+import 'package:provider/provider.dart';
+import 'package:selcapital/providers/savings.dart';
 
 class SavingsScreen extends StatelessWidget {
   static String routeName = "/savings";
@@ -17,8 +18,7 @@ class SavingsScreen extends StatelessWidget {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        color: kBackgroundColor,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -34,6 +34,7 @@ class SavingsScreen extends StatelessWidget {
           ],
         ),
       ),
+      backgroundColor: kBackgroundColor,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFF4EE3E5),
         onPressed: () => Navigator.pushNamed(context, AddPlanScreen.routeName),
@@ -50,25 +51,38 @@ class MyPlansBody extends StatefulWidget {
 
 class _MyPlansBodyState extends State<MyPlansBody> {
   @override
+  void initState() {
+    super.initState();
+
+    Provider.of<SavingsModel>(context, listen: false).fetchSavings();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(shrinkWrap: true, children: [
-      GestureDetector(
-        onTap: () =>
-            Navigator.pushNamed(context, SavingsDetailScreen.routeName),
-        child: ActivePlansCard(
-          planType: "School Fees",
-          interestPerAnnum: "10%",
-          balance: "N20,000",
-        ),
-      ),
-      GestureDetector(
-          onTap: () =>
-              Navigator.pushNamed(context, SavingsDetailScreen.routeName),
-          child: OnHoldPlansCard(
-            planType: "Wedding",
-            interestPerAnnum: "14%",
-            balance: "N74,000",
-          )),
-    ]);
+    return Consumer<SavingsModel>(
+      builder: (context, savings, child) {
+        return ListView(
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
+          children: savings.savings
+              .map(
+                (saving) => GestureDetector(
+                  onTap: () {
+                    savings.setCurrentSavings(saving);
+                    Navigator.pushNamed(context, SavingsDetailScreen.routeName);
+                  },
+                  child: ActivePlansCard(
+                    planType: saving['TARGET_TITLE'],
+                    maturityDate:
+                        "${saving['TOTAL_INTERESTS'] != null ? saving['TOTAL_INTERESTS'] : 0}%",
+                    balance:
+                        "N ${saving['CURRENT_BALANCE'] != null ? saving['CURRENT_BALANCE'] : 0}",
+                  ),
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
   }
 }

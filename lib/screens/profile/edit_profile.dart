@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:selcapital/providers/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  static String routeName = "/edit_profile";
+  static String routeName = '/edit_profile';
   @override
   _EditProfileState createState() => _EditProfileState();
 }
@@ -18,6 +18,15 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileState extends State<EditProfileScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  OptionsModel options;
+  List gender;
+  List maritalStatus;
+  List educationSectors;
+  List occupations;
+  List workSectors;
+  List residenceTypes;
+  List states;
+  List lgas;
 
   TabController _tabController;
   int _tabState = 0;
@@ -25,7 +34,6 @@ class _EditProfileState extends State<EditProfileScreen>
 
   DateTime selectedDate = DateTime.now();
 
-  int _st = 0;
   String text;
 
   var formatter = new DateFormat('yyyy-MM-dd');
@@ -34,7 +42,7 @@ class _EditProfileState extends State<EditProfileScreen>
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedDate, // Refer step 1
-      firstDate: DateTime(2020),
+      firstDate: DateTime(1990),
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != selectedDate)
@@ -46,13 +54,13 @@ class _EditProfileState extends State<EditProfileScreen>
   TextEditingController _name;
   TextEditingController _email;
   TextEditingController _phone;
-  String _gender = '2';
+  String _gender;
   String _maritalStatus;
   String _levelOfEducation;
   String _employmentStatus;
   String _workSector;
   TextEditingController _employerName;
-  TextEditingController _workStartDate;
+  String _workStartDate;
   TextEditingController _monthlyIncome;
   String _typeOfResident;
   TextEditingController _address;
@@ -66,33 +74,89 @@ class _EditProfileState extends State<EditProfileScreen>
 
   @override
   void initState() {
+    super.initState();
+
     _tabController = new TabController(
       length: 4,
       vsync: this,
       initialIndex: _tabState,
     );
     final user = context.read<UserModel>();
+    options = context.read<OptionsModel>();
 
-    super.initState();
+    gender = options.gender;
+    if (gender.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      gender.add({'id': '0', 'name': 'Choose Gender'});
+    }
+    maritalStatus = options.maritalStatus;
+    if (maritalStatus.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      maritalStatus.add({'id': '0', 'name': 'Marital Status'});
+    }
+    educationSectors = options.educationSectors;
+    if (educationSectors.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      educationSectors.add({'id': '0', 'name': 'Level of Education'});
+    }
+    occupations = options.occupations;
+    if (occupations.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      occupations.add({'id': '0', 'name': 'Employment Status'});
+    }
+    workSectors = options.workSectors;
+    if (workSectors.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      workSectors.add({'id': '0', 'name': 'Work Sector'});
+    }
+    residenceTypes = options.residenceTypes;
+    if (residenceTypes.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      residenceTypes.add({'id': '0', 'name': 'Type of Residence'});
+    }
+    states = options.states;
+    if (states.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      states.add({'id': '0', 'name': 'State'});
+    }
+    lgas = options.lgas;
+    if (lgas.singleWhere((element) => element['id'] == '0',
+            orElse: () => null) ==
+        null) {
+      lgas.add({'id': '0', 'name': 'Local Government Area'});
+    }
+
     _name = TextEditingController(text: user.user?.profile?.name);
     _email = TextEditingController(text: user.user?.profile?.email);
     _phone = TextEditingController(text: user.user?.profile?.phone);
-    // _gender = user.user?.profile?.gender;
-    // _maritalStatus = user.user?.profile?.maritalStatus;
-    // _levelOfEducation = user.user?.work['educational_qualification'];
-    // _employmentStatus = user.user?.work['occupation_id'];
-    // _workSector = user.user?.work['work_sector'];
+    _gender = user.user?.profile?.gender ?? '0';
+    _maritalStatus = user.user?.profile?.maritalStatus ?? '0';
+    _levelOfEducation = user.user?.work['educational_qualification'] ?? '0';
+    _employmentStatus = user.user?.work['occupation_id'] ?? '0';
+    _workSector = user.user?.work['work_sector'] ?? '0';
     _employerName =
         TextEditingController(text: user.user?.work['company_name']);
-    _workStartDate =
-        TextEditingController(text: user.user?.work['work_start_date']);
+    _workStartDate = user.user?.work['work_start_date'];
+    if (_workStartDate == null || _workStartDate == '') {
+      _workStartDate = formatter.format(DateTime.now());
+    }
+    setState(() {
+      selectedDate = DateTime.parse('$_workStartDate 00:00:00.000');
+    });
     _monthlyIncome =
         TextEditingController(text: user.user?.work['net_monthly_income']);
-    // _typeOfResident = user.user?.residence['nature_of_accomodation'];
+    _typeOfResident = user.user?.residence['nature_of_accomodation'] ?? '0';
     _address =
         TextEditingController(text: user.user?.residence['home_address']);
-    // _state = user.user?.residence['home_state'];
-    // _lga = user.user?.residence['home_lga'];
+    _state = user.user?.residence['home_state'] ?? '0';
+    _lga = user.user?.residence['home_lga'] ?? '0';
     _residentYears =
         TextEditingController(text: user.user?.residence['resident_years']);
     _nokName = TextEditingController(text: user.user?.nextOfKin['nok_name']);
@@ -110,7 +174,6 @@ class _EditProfileState extends State<EditProfileScreen>
     _email.dispose();
     _phone.dispose();
     _employerName.dispose();
-    _workStartDate.dispose();
     _monthlyIncome.dispose();
     _address.dispose();
     _residentYears.dispose();
@@ -141,22 +204,16 @@ class _EditProfileState extends State<EditProfileScreen>
         break;
     }
 
-    switch (_st) {
-      case 0:
-        text = "Start Date";
-        break;
-      case 1:
-        text = ("${selectedDate.toLocal()}".split(' ')[0]);
+    text =
+        _workStartDate == null ? 'Start Date' : formatter.format(selectedDate);
 
-        break;
-    }
-    return Consumer<OptionsModel>(
-      builder: (context, options, child) {
+    return Consumer<UserModel>(
+      builder: (context, user, child) {
         return Consumer<UserModel>(
           builder: (context, user, child) {
             return new Scaffold(
               appBar: new AppBar(
-                title: new Text("Back"),
+                title: new Text('Back'),
                 automaticallyImplyLeading: true,
                 bottom: PreferredSize(
                   preferredSize:
@@ -175,16 +232,16 @@ class _EditProfileState extends State<EditProfileScreen>
                           fontFamily: 'Poppins'),
                       tabs: [
                         new Tab(
-                          text: "Personal Information",
+                          text: 'Personal Information',
                         ),
                         new Tab(
-                          text: "Education & Employment",
+                          text: 'Education & Employment',
                         ),
                         new Tab(
-                          text: "Residence",
+                          text: 'Residence',
                         ),
                         new Tab(
-                          text: "Next of kin",
+                          text: 'Next of kin',
                         ),
                       ],
                       controller: _tabController,
@@ -222,11 +279,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Full Name",
+                                hintText: 'Full Name',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -253,11 +310,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Email Address",
+                                hintText: 'Email Address',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -284,11 +341,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Phone",
+                                hintText: 'Phone',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -309,7 +366,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -319,13 +376,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _gender = newValue;
                                   });
                                 },
-                                items: options.gender.map((option) {
+                                items: gender.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -349,7 +406,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -359,13 +416,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _maritalStatus = newValue;
                                   });
                                 },
-                                items: options.maritalStatus.map((option) {
+                                items: maritalStatus.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -378,7 +435,7 @@ class _EditProfileState extends State<EditProfileScreen>
                             height: getProportionateScreenHeight(100),
                           ),
                           PrimaryBlockButton(
-                              text: "Next",
+                              text: 'Next',
                               press: () {
                                 setState(() {
                                   _tabState = 1;
@@ -404,7 +461,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -414,13 +471,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _levelOfEducation = newValue;
                                   });
                                 },
-                                items: options.educationSectors.map((option) {
+                                items: educationSectors.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -444,7 +501,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -454,13 +511,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _employmentStatus = newValue;
                                   });
                                 },
-                                items: options.occupations.map((option) {
+                                items: occupations.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -484,7 +541,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -494,13 +551,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _workSector = newValue;
                                   });
                                 },
-                                items: options.workSectors.map((option) {
+                                items: workSectors.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -529,11 +586,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Employer Name",
+                                hintText: 'Employer Name',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -542,72 +599,39 @@ class _EditProfileState extends State<EditProfileScreen>
                           SizedBox(
                             height: getProportionateScreenHeight(24),
                           ),
-                          // Container(
-                          //   height: 50,
-                          //   decoration: BoxDecoration(
-                          //     border: Border.all(color: kStrokeColorDark),
-                          //     borderRadius: BorderRadius.circular(5),
-                          //   ),
-                          //   margin: EdgeInsets.fromLTRB(
-                          //       0, 0, 0, getProportionateScreenHeight(24)),
-                          //   padding: EdgeInsets.symmetric(
-                          //       horizontal: getProportionateScreenWidth(12)),
-                          //   alignment: Alignment.centerLeft,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     crossAxisAlignment: CrossAxisAlignment.start,
-                          //     children: [
-                          //       Text(
-                          //         "$text",
-                          //         style: TextStyle(
-                          //           fontSize: 15,
-                          //           fontWeight: FontWeight.bold,
-                          //           fontFamily: "Poppins",
-                          //           color: kTextColorGrey,
-                          //         ),
-                          //       ),
-                          //       GestureDetector(
-                          //           onTap: () async {
-                          //             setState(() {
-                          //               _st = 1;
-                          //             });
-                          //             _selectDate(context);
-                          //           },
-                          //           child: SvgPicture.asset(
-                          //               "assets/icons/calendar.svg"))
-                          //     ],
-                          //   ),
-                          // ),
-                          Container(
-                            height: 50,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: getProportionateScreenWidth(8)),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: kStrokeColorDark),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: TextFormField(
-                              keyboardType: TextInputType.name,
-                              controller: _workStartDate,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                hintText: "Start date",
-                                hintStyle: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
-                                  color: kTextColorGrey,
-                                ),
+                          GestureDetector(
+                            onTap: () async {
+                              _selectDate(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: kStrokeColorDark),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              margin: EdgeInsets.fromLTRB(
+                                  0, 0, 0, getProportionateScreenHeight(24)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: getProportionateScreenWidth(12)),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '$text',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Poppins',
+                                      color: kTextColorGrey,
+                                    ),
+                                  ),
+                                  SvgPicture.asset('assets/icons/calendar.svg'),
+                                ],
                               ),
                             ),
-                          ),
-                          //up to this point
-                          SizedBox(
-                            height: getProportionateScreenHeight(24),
                           ),
                           Container(
                             height: 50,
@@ -626,11 +650,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Monthly Income",
+                                hintText: 'Monthly Income',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -640,7 +664,7 @@ class _EditProfileState extends State<EditProfileScreen>
                             height: getProportionateScreenHeight(40),
                           ),
                           PrimaryBlockButton(
-                              text: "Next",
+                              text: 'Next',
                               press: () {
                                 setState(() {
                                   _tabState = 2;
@@ -666,7 +690,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins",
+                                      fontFamily: 'Poppins',
                                       color: kTextColorGrey,
                                     )),
                                 isExpanded: true,
@@ -676,13 +700,13 @@ class _EditProfileState extends State<EditProfileScreen>
                                     _typeOfResident = newValue;
                                   });
                                 },
-                                items: options.residenceTypes.map((option) {
+                                items: residenceTypes.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -711,11 +735,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Your Current Address",
+                                hintText: 'Your Current Address',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -737,24 +761,39 @@ class _EditProfileState extends State<EditProfileScreen>
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: "Poppins",
+                                    fontFamily: 'Poppins',
                                     color: kTextColorGrey,
                                   ),
                                 ),
                                 isExpanded: true,
                                 value: _state,
-                                onChanged: (newValue) {
+                                onChanged: (newValue) async {
                                   setState(() {
                                     _state = newValue;
                                   });
+
+                                  await options.fetchLGAs(newValue);
+
+                                  lgas = options.lgas;
+                                  if (lgas.singleWhere(
+                                          (element) => element['id'] == '0',
+                                          orElse: () => null) ==
+                                      null) {
+                                    lgas.add({'id': '0', 'name': 'Other'});
+                                  }
+
+                                  setState(() {
+                                    _lga = '0';
+                                    lgas = lgas;
+                                  });
                                 },
-                                items: options.states.map((option) {
+                                items: states.map((option) {
                                   return DropdownMenuItem(
                                     child: Text(option['name'],
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
+                                          fontFamily: 'Poppins',
                                           color: kTextColorGrey,
                                         )),
                                     value: option['id'],
@@ -766,45 +805,45 @@ class _EditProfileState extends State<EditProfileScreen>
                           SizedBox(
                             height: getProportionateScreenHeight(24),
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: getProportionateScreenWidth(8)),
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: kStrokeColorDark)),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                hint: Text(
-                                  'Local Government Area',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Poppins",
-                                    color: kTextColorGrey,
-                                  ),
-                                ),
-                                isExpanded: true,
-                                value: _lga,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _lga = newValue;
-                                  });
-                                },
-                                items: options.lgas.map((option) {
-                                  return DropdownMenuItem(
-                                    child: Text(option['name'],
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Poppins",
-                                          color: kTextColorGrey,
-                                        )),
-                                    value: option['id'],
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   padding: EdgeInsets.symmetric(
+                          //       horizontal: getProportionateScreenWidth(8)),
+                          //   height: 50,
+                          //   decoration: BoxDecoration(
+                          //       border: Border.all(color: kStrokeColorDark)),
+                          //   child: DropdownButtonHideUnderline(
+                          //     child: DropdownButton(
+                          //       hint: Text(
+                          //         'Local Government Area',
+                          //         style: TextStyle(
+                          //           fontSize: 15,
+                          //           fontWeight: FontWeight.bold,
+                          //           fontFamily: 'Poppins',
+                          //           color: kTextColorGrey,
+                          //         ),
+                          //       ),
+                          //       isExpanded: true,
+                          //       value: _lga,
+                          //       onChanged: (newValue) {
+                          //         setState(() {
+                          //           _lga = newValue;
+                          //         });
+                          //       },
+                          //       items: lgas.map((option) {
+                          //         return DropdownMenuItem(
+                          //           child: Text(option['name'],
+                          //               style: TextStyle(
+                          //                 fontSize: 15,
+                          //                 fontWeight: FontWeight.bold,
+                          //                 fontFamily: 'Poppins',
+                          //                 color: kTextColorGrey,
+                          //               )),
+                          //           value: option['id'],
+                          //         );
+                          //       }).toList(),
+                          //     ),
+                          //   ),
+                          // ),
                           SizedBox(
                             height: getProportionateScreenHeight(24),
                           ),
@@ -825,11 +864,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "How long have you lived there?",
+                                hintText: 'How long have you lived there?',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -839,7 +878,7 @@ class _EditProfileState extends State<EditProfileScreen>
                             height: getProportionateScreenHeight(100),
                           ),
                           PrimaryBlockButton(
-                              text: "Next",
+                              text: 'Next',
                               press: () {
                                 setState(() {
                                   _tabState = 3;
@@ -870,11 +909,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Full Name",
+                                hintText: 'Full Name',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -900,11 +939,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Email Address",
+                                hintText: 'Email Address',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -930,11 +969,11 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Phone",
+                                hintText: 'Phone',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
@@ -960,17 +999,16 @@ class _EditProfileState extends State<EditProfileScreen>
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
-                                hintText: "Relationship",
+                                hintText: 'Relationship',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: "Poppins",
+                                  fontFamily: 'Poppins',
                                   color: kTextColorGrey,
                                 ),
                               ),
                             ),
                           ),
-                          //up to this point
                           SizedBox(
                             height: getProportionateScreenHeight(100),
                           ),
@@ -983,7 +1021,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                 ),
                               ),
                               PrimaryBlockButton(
-                                text: "Save",
+                                text: 'Save',
                                 press: () async {
                                   if (_formKey.currentState.validate()) {
                                     _formKey.currentState.save();
@@ -1000,7 +1038,7 @@ class _EditProfileState extends State<EditProfileScreen>
                                       _employmentStatus,
                                       _workSector,
                                       _employerName.text,
-                                      _workStartDate.text,
+                                      formatter.format(selectedDate),
                                       _monthlyIncome.text,
                                       _typeOfResident,
                                       _address.text,

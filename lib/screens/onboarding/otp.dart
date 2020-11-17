@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selcapital/components/buttons/primary_block.dart';
 import 'package:selcapital/components/buttons/secondary_block.dart';
@@ -112,6 +113,16 @@ class _OTPscreenState extends State<OTPscreen> {
                                 if (validOTP) {
                                   Navigator.pushNamed(
                                       context, SignUpScreen.routeName);
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg: "OTP is not correct!",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.SNACKBAR,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: kPrimaryColor,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
                                 }
                                 setState(() {
                                   s = 1;

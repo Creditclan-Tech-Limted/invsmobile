@@ -20,10 +20,10 @@ class AmountScreen extends StatelessWidget {
       case '1':
         _frequency = 'daily';
         break;
-      case '2':
+      case '4':
         _frequency = 'weekly';
         break;
-      case '3':
+      case '2':
         _frequency = 'monthly';
         break;
     }
@@ -109,8 +109,7 @@ class _AmountScreenBodyState extends State<AmountScreenBody> {
                     getProportionateScreenHeight(0),
                     getProportionateScreenWidth(16),
                     getProportionateScreenHeight(24)),
-                child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ante et neque sapien scelerisque et.",
+                child: Text("",
                     style: TextStyle(
                       letterSpacing: 1,
                       color: Color(0xFF9098B1),

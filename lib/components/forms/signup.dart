@@ -8,6 +8,7 @@ import 'package:selcapital/providers/accounts.dart';
 import 'package:selcapital/providers/user.dart';
 import 'package:selcapital/screens/profile/edit_profile.dart';
 import 'package:selcapital/size_config.dart';
+import 'package:selcapital/providers/options.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -84,30 +85,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 margin: EdgeInsets.fromLTRB(0, 17, 0, 0),
                 alignment: Alignment.centerLeft,
                 child: buildDobFormField(account.accounts?.dob),
-
-                //  Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //     Text(
-                //       "$text",
-                //       style: TextStyle(
-                //         fontSize: 15,
-                //         fontWeight: FontWeight.bold,
-                //         fontFamily: "Poppins",
-                //         color: kTextColorGrey,
-                //       ),
-                //     ),
-                //     GestureDetector(
-                //         onTap: () {
-                //           setState(() async {
-                //             _state = 1;
-                //             _selectDate(context);
-                //           });
-                //         },
-                //         child: SvgPicture.asset("assets/icons/calendar.svg"))
-                //   ],
-                // ),
               ),
               Container(
                 height: 50,
@@ -162,6 +139,8 @@ class _SignUpFormState extends State<SignUpForm> {
                               account.bvn,
                             );
                             if (isLoggedIn) {
+                              Provider.of<OptionsModel>(context, listen: false)
+                                  .loadOptions();
                               Navigator.pushNamed(
                                   context, EditProfileScreen.routeName);
                             }

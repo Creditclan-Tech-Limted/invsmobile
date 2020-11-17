@@ -201,9 +201,10 @@ class _TenureScreenBodyState extends State<TenureScreenBody> {
               ),
               GestureDetector(
                 onTap: () {
-                  // setState(() {
-                  //   _state = 4;
-                  // });
+                  setState(() {
+                    _state = 4;
+                  });
+                  _selectDate(context);
                 },
                 child: Container(
                   height: 50,
@@ -232,14 +233,7 @@ class _TenureScreenBodyState extends State<TenureScreenBody> {
                           color: kTextColorGrey,
                         ),
                       ),
-                      GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              _state = 4;
-                            });
-                            _selectDate(context);
-                          },
-                          child: SvgPicture.asset("assets/icons/calendar.svg"))
+                      SvgPicture.asset("assets/icons/calendar.svg")
                     ],
                   ),
                 ),
@@ -250,8 +244,7 @@ class _TenureScreenBodyState extends State<TenureScreenBody> {
                     getProportionateScreenHeight(0),
                     getProportionateScreenWidth(16),
                     getProportionateScreenHeight(24)),
-                child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ante et neque sapien scelerisque et.",
+                child: Text("",
                     style: TextStyle(
                       letterSpacing: 1,
                       color: Color(0xFF9098B1),

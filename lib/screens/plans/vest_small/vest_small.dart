@@ -20,7 +20,8 @@ class VestSmallScreen extends StatelessWidget {
       ),
       body: Container(
           color: Colors.white,
-          child: Column(
+          child: ListView(
+            shrinkWrap: true,
             children: [
               Container(
                 margin:

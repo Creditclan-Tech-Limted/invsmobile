@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -7,16 +6,30 @@ import 'package:selcapital/httpClient.dart';
 import 'package:selcapital/constants.dart';
 import 'package:selcapital/providers/user.dart';
 
+class Savings {
+  final List<dynamic> data;
+
+  Savings({this.data});
+
+  factory Savings.fromJson(Map<String, dynamic> json) {
+    return Savings(
+      data: json['loans'],
+    );
+  }
+}
+
 class SavingsModel extends ChangeNotifier {
   final http.BaseClient httpClient = new HttpClient(kApiKey, http.Client());
 
   UserModel _userModel = new UserModel();
 
-  final Map _savings = new Map();
+  List<dynamic> _savings = [];
 
-  UnmodifiableMapView get savings => UnmodifiableMapView(_savings);
+  dynamic _currentSavings;
 
-  List<dynamic> get savingsList => _savings['savings'];
+  List<dynamic> get savings => _savings;
+
+  dynamic get currentSavings => _currentSavings;
 
   String _planId;
   String _goalName;
@@ -31,6 +44,41 @@ class SavingsModel extends ChangeNotifier {
 
   void update(UserModel userModel) {
     _userModel = userModel;
+
+    notifyListeners();
+  }
+
+  Future<bool> fetchSavings() async {
+    try {
+      final response = await httpClient.post(
+        '$kBaseUrl/customer/savings/portfolio',
+        body: jsonEncode(<String, dynamic>{
+          'token': _userModel.user?.token,
+        }),
+      );
+      if (response.statusCode < 300) {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        _savings = Savings.fromJson(jsonDecode(response.body)).data;
+
+        notifyListeners();
+
+        return true;
+      } else {
+        throw Exception(response.body);
+      }
+    } catch (e) {
+      print('Error: $e');
+
+      notifyListeners();
+
+      return false;
+    }
+  }
+
+  setCurrentSavings(Map<String, dynamic> saving) {
+    print(saving);
+    _currentSavings = saving;
 
     notifyListeners();
   }

@@ -6,18 +6,18 @@ class InvestmentCard extends StatelessWidget {
   const InvestmentCard({
     Key key,
     this.avatar,
-    this.investmentType,
-    this.percentageDone,
-    this.minAmount,
-    this.monthDue,
-    this.minGuaranteePercentage,
+    this.title,
+    this.maturity,
+    this.amount,
+    this.duration,
+    this.dueDate,
   }) : super(key: key);
   final String avatar;
-  final String investmentType;
-  final String percentageDone;
-  final String minAmount;
-  final String monthDue;
-  final String minGuaranteePercentage;
+  final String title;
+  final String maturity;
+  final String amount;
+  final String duration;
+  final String dueDate;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class InvestmentCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(investmentType,
+                      Text(title,
                           style: TextStyle(
                             fontFamily: "Montserrat",
                             fontWeight: FontWeight.w600,
@@ -71,7 +71,7 @@ class InvestmentCard extends StatelessWidget {
                             width: getProportionateScreenWidth(3),
                           ),
                           Text(
-                            percentageDone,
+                            "Maturity Value: $maturity",
                             style: TextStyle(
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w500,
@@ -110,7 +110,7 @@ class InvestmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      minAmount,
+                      amount,
                       style: TextStyle(
                         fontFamily: "Montserrat",
                         fontWeight: FontWeight.w600,
@@ -119,7 +119,7 @@ class InvestmentCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Min Amount",
+                      "Amount",
                       style: TextStyle(
                         fontFamily: "Montserrat",
                         fontWeight: FontWeight.w500,
@@ -134,7 +134,7 @@ class InvestmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      monthDue,
+                      duration,
                       style: TextStyle(
                         fontFamily: "Montserrat",
                         fontWeight: FontWeight.w600,
@@ -143,7 +143,7 @@ class InvestmentCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Min duration",
+                      "Investment Duration",
                       style: TextStyle(
                         fontFamily: "Montserrat",
                         fontWeight: FontWeight.w500,
@@ -158,7 +158,7 @@ class InvestmentCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        minGuaranteePercentage,
+                        dueDate,
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w600,
@@ -167,7 +167,7 @@ class InvestmentCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Min guarantee",
+                        "Maturity Date",
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w500,

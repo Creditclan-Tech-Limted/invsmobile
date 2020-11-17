@@ -652,69 +652,6 @@ class _DashBoardBodyState extends State<DashBoardScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: getProportionateScreenHeight(20)),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Color(0xFF3B57E8)),
-                        borderRadius: BorderRadius.circular(
-                            getProportionateScreenHeight(10))),
-                    padding: EdgeInsets.fromLTRB(
-                        getProportionateScreenWidth(18),
-                        getProportionateScreenHeight(20),
-                        getProportionateScreenWidth(0),
-                        getProportionateScreenHeight(20)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: getProportionateScreenWidth(40),
-                          margin: EdgeInsets.fromLTRB(
-                              0, getProportionateScreenHeight(4), 20, 0),
-                          child: SvgPicture.asset("assets/icons/lock.svg"),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.fromLTRB(
-                                  getProportionateScreenWidth(3),
-                                  getProportionateScreenHeight(0),
-                                  getProportionateScreenWidth(112),
-                                  0),
-                              alignment: Alignment.topLeft,
-                              child: Text("Create a safelock",
-                                  style: TextStyle(
-                                      color: kTextColorBlue,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          getProportionateScreenWidth(14))),
-                            ),
-                            Container(
-                              width: getProportionateScreenWidth(200),
-                              margin: EdgeInsets.fromLTRB(
-                                  getProportionateScreenWidth(0),
-                                  getProportionateScreenHeight(2),
-                                  getProportionateScreenWidth(33),
-                                  0),
-                              alignment: Alignment.topLeft,
-                              child: Text("Last updated 2 minutes ago",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: kTextColorBlue,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.normal,
-                                      fontSize:
-                                          getProportionateScreenWidth(12))),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),

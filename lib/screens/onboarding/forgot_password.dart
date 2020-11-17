@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selcapital/components/basic/custom_prefix_icon.dart';
 import 'package:selcapital/components/buttons/primary_block.dart';
@@ -16,6 +17,18 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  final snackBar = SnackBar(
+    backgroundColor: kTextColorGrey,
+    content: Text(
+      'This Email is not registered',
+      style: TextStyle(
+          fontSize: 15,
+          fontFamily: "Poppins",
+          color: Colors.white,
+          fontWeight: FontWeight.bold),
+    ),
+  );
+
   int s = 1;
   final _formKey = GlobalKey<FormState>();
   String email;
@@ -103,6 +116,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       PrimaryBlockButton(
                         text: "Reset",
                         press: () async {
+                          // Scaffold.of(context).showSnackBar(snackBar);
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
                             setState(() {
@@ -112,6 +126,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             if (isLoggedIn) {
                               Navigator.popAndPushNamed(
                                   context, LoginScreen.routeName);
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "This email is not registered!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.SNACKBAR,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: kPrimaryColor,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
                             }
                             setState(() {
                               s = 1;

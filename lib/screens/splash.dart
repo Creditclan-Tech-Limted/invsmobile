@@ -18,32 +18,33 @@ class _SplashState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    _loadOptions();
-
-    _loginCheck().then((status) {
-      if (status) {
-        Provider.of<UserModel>(context, listen: false).loadUser();
-        Provider.of<OptionsModel>(context, listen: false).loadOptions();
-        _navigateToDashboard();
-      } else {
-        _navigateToOnboarding();
-      }
+    _loadOptions().then((status) {
+      _loginCheck().then((status) {
+        if (status) {
+          Provider.of<UserModel>(context, listen: false).loadUser();
+          Provider.of<OptionsModel>(context, listen: false).loadOptions();
+          _navigateToDashboard();
+        } else {
+          _navigateToOnboarding();
+        }
+      });
     });
   }
 
-  _loadOptions() async {
+  Future<void> _loadOptions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var _options = Provider.of<OptionsModel>(context, listen: false);
 
-    prefs.getString('gender') ?? _options.fetchGenders();
-    prefs.getString('maritalStatus') ?? _options.fetchMaritalStatus();
-    prefs.getString('educationSectors') ?? _options.fetchEducationSectors();
-    prefs.getString('occupations') ?? _options.fetchOccupations();
-    prefs.getString('workSectors') ?? _options.fetchWorkSectors();
-    prefs.getString('residenceTypes') ?? _options.fetchResidenceTypes();
-    prefs.getString('states') ?? _options.fetchStates();
-    prefs.getString('banks') ?? _options.fetchBanks();
+    prefs.getString('gender') ?? await _options.fetchGenders();
+    prefs.getString('maritalStatus') ?? await _options.fetchMaritalStatus();
+    prefs.getString('educationSectors') ??
+        await _options.fetchEducationSectors();
+    prefs.getString('occupations') ?? await _options.fetchOccupations();
+    prefs.getString('workSectors') ?? await _options.fetchWorkSectors();
+    prefs.getString('residenceTypes') ?? await _options.fetchResidenceTypes();
+    prefs.getString('states') ?? await _options.fetchStates();
+    prefs.getString('banks') ?? await _options.fetchBanks();
   }
 
   Future<bool> _loginCheck() async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selcapital/constants.dart';
 import 'package:selcapital/components/basic/custom_prefix_icon.dart';
@@ -7,6 +8,7 @@ import 'package:selcapital/components/buttons/primary_block.dart';
 import 'package:selcapital/providers/user.dart';
 import 'package:selcapital/size_config.dart';
 import 'package:selcapital/screens/bottom_nav.dart';
+import 'package:selcapital/providers/options.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -72,8 +74,20 @@ class _LoginFormState extends State<LoginForm> {
                           });
                           bool isLoggedIn = await user.login(email, password);
                           if (isLoggedIn) {
+                            Provider.of<OptionsModel>(context, listen: false)
+                                .loadOptions();
                             Navigator.popAndPushNamed(
                                 context, BottomNavigation.routeName);
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: "Incorrect email or password!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.SNACKBAR,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: kPrimaryColor,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
                           }
                           setState(() {
                             s = 1;

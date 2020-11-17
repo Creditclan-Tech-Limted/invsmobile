@@ -178,8 +178,7 @@ class _FrequencyScreenBodyState extends State<FrequencyScreenBody> {
                     getProportionateScreenHeight(0),
                     getProportionateScreenWidth(16),
                     getProportionateScreenHeight(24)),
-                child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ante et neque sapien scelerisque et.",
+                child: Text("",
                     style: TextStyle(
                       letterSpacing: 1,
                       color: Color(0xFF9098B1),

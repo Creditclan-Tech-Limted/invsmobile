@@ -76,7 +76,7 @@ class _ProductDetailTwoBodyState extends State<ProductDetailTwoBody> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Agriculture",
+                      Text(investment.currentProduct['INVESTMENT_TITLE'],
                           style: TextStyle(
                             fontFamily: "Montserrat",
                             fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class _ProductDetailTwoBodyState extends State<ProductDetailTwoBody> {
                             width: getProportionateScreenWidth(5),
                           ),
                           Text(
-                            "10%",
+                            "${investment.currentProduct['STATUS'] != null ? investment.currentProduct['STATUS'] : 0}%",
                             style: TextStyle(
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w500,
@@ -142,7 +142,7 @@ class _ProductDetailTwoBodyState extends State<ProductDetailTwoBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "40,000",
+                            "N ${investment.currentProduct['INVESTMENT_AMOUNT'] != null ? investment.currentProduct['INVESTMENT_AMOUNT'] : 0}",
                             style: TextStyle(
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w600,
@@ -166,7 +166,7 @@ class _ProductDetailTwoBodyState extends State<ProductDetailTwoBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "4 months",
+                            "${investment.currentProduct['TENOR'] != null ? investment.currentProduct['TENOR'] : 0} ${investment.currentProduct['LD'] != null ? investment.currentProduct['LD'] : 'months'}",
                             style: TextStyle(
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w600,
@@ -190,7 +190,7 @@ class _ProductDetailTwoBodyState extends State<ProductDetailTwoBody> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "10%",
+                              "${investment.currentProduct['INTEREST'] != null ? investment.currentProduct['INTEREST'] : 0}%",
                               style: TextStyle(
                                 fontFamily: "Montserrat",
                                 fontWeight: FontWeight.w600,

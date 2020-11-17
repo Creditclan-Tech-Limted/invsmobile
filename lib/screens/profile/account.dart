@@ -107,10 +107,17 @@ class _AccountState extends State<AccountScreen> {
                   onTap: () =>
                       Navigator.pushNamed(context, EditProfileScreen.routeName),
                   child: Container(
+                    color: Colors.white,
                     margin: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(12),
                       getProportionateScreenHeight(54),
                       getProportionateScreenWidth(12),
+                      getProportionateScreenHeight(0),
+                    ),
+                    padding: EdgeInsets.fromLTRB(
+                      getProportionateScreenWidth(0),
+                      getProportionateScreenHeight(12),
+                      getProportionateScreenWidth(0),
                       getProportionateScreenHeight(24),
                     ),
                     child: Row(
@@ -136,7 +143,7 @@ class _AccountState extends State<AccountScreen> {
                 ),
                 Container(
                   margin:
-                      EdgeInsets.only(bottom: getProportionateScreenHeight(30)),
+                      EdgeInsets.only(bottom: getProportionateScreenHeight(0)),
                   padding: EdgeInsets.symmetric(
                     horizontal: getProportionateScreenHeight(12),
                   ),
@@ -150,10 +157,17 @@ class _AccountState extends State<AccountScreen> {
                   onTap: () => Navigator.pushNamed(
                       context, AccountsAndCardsScreen.routeName),
                   child: Container(
+                    color: Colors.white,
                     margin: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(12),
                       getProportionateScreenHeight(0),
                       getProportionateScreenWidth(12),
+                      getProportionateScreenHeight(0),
+                    ),
+                    padding: EdgeInsets.fromLTRB(
+                      getProportionateScreenWidth(0),
+                      getProportionateScreenHeight(24),
+                      getProportionateScreenWidth(0),
                       getProportionateScreenHeight(24),
                     ),
                     child: Row(
@@ -179,7 +193,7 @@ class _AccountState extends State<AccountScreen> {
                 ),
                 Container(
                   margin:
-                      EdgeInsets.only(bottom: getProportionateScreenHeight(30)),
+                      EdgeInsets.only(bottom: getProportionateScreenHeight(6)),
                   padding: EdgeInsets.symmetric(
                     horizontal: getProportionateScreenHeight(12),
                   ),
@@ -193,10 +207,17 @@ class _AccountState extends State<AccountScreen> {
                   onTap: () => Navigator.pushNamed(
                       context, ChangePasswordScreen.routeName),
                   child: Container(
+                    color: Colors.white,
                     margin: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(12),
                       getProportionateScreenHeight(0),
                       getProportionateScreenWidth(12),
+                      getProportionateScreenHeight(0),
+                    ),
+                    padding: EdgeInsets.fromLTRB(
+                      getProportionateScreenWidth(0),
+                      getProportionateScreenHeight(24),
+                      getProportionateScreenWidth(0),
                       getProportionateScreenHeight(24),
                     ),
                     child: Row(
@@ -222,7 +243,7 @@ class _AccountState extends State<AccountScreen> {
                 ),
                 Container(
                   margin:
-                      EdgeInsets.only(bottom: getProportionateScreenHeight(30)),
+                      EdgeInsets.only(bottom: getProportionateScreenHeight(6)),
                   padding: EdgeInsets.symmetric(
                     horizontal: getProportionateScreenHeight(12),
                   ),
@@ -238,10 +259,17 @@ class _AccountState extends State<AccountScreen> {
                     Navigator.popAndPushNamed(context, LoginScreen.routeName);
                   },
                   child: Container(
+                    color: Colors.white,
                     margin: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(12),
                       getProportionateScreenHeight(0),
                       getProportionateScreenWidth(12),
+                      getProportionateScreenHeight(0),
+                    ),
+                    padding: EdgeInsets.fromLTRB(
+                      getProportionateScreenWidth(0),
+                      getProportionateScreenHeight(24),
+                      getProportionateScreenWidth(0),
                       getProportionateScreenHeight(24),
                     ),
                     child: Row(
